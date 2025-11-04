@@ -1,0 +1,42 @@
+# Copy this file to .env and fill in your values
+# Environment Configuration
+NODE_ENV=development
+
+# Server Configuration
+PORT=3000
+
+# Database Configuration
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-minimum-32-characters
+JWT_EXPIRES_IN=7d
+
+# Email Configuration
+EMAIL_ENABLED=false
+EMAIL_FROM_NAME=Budget Tracker
+EMAIL_FROM_ADDRESS=noreply@budgettracker.com
+
+# SMTP Configuration
+# For Gmail: use App Password (not your regular password)
+# Enable 2FA and generate App Password at: https://myaccount.google.com/apppasswords
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password-or-password
+SMTP_REJECT_UNAUTHORIZED=true
+
+# Frontend URL (for email verification links)
+FRONTEND_URL=http://localhost:5173
+
+# CORS Configuration (for production - comma-separated list)
+# CORS_ORIGIN=https://yourdomain.com,https://www.yourdomain.com
+
+# Common SMTP Providers:
+# Gmail: smtp.gmail.com:587 (secure: false) or 465 (secure: true)
+# Outlook: smtp-mail.outlook.com:587 (secure: false)
+# Yahoo: smtp.mail.yahoo.com:587 (secure: false) or 465 (secure: true)
+# SendGrid: smtp.sendgrid.net:587 (secure: false)
+# Mailgun: smtp.mailgun.org:587 (secure: false)
+

@@ -1,22 +1,32 @@
 const { Sequelize } = require("sequelize");
-require("dotenv").config();
+const config = require("../config/config");
 
 // Initialize Sequelize connection
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(config.database.url, {
   dialect: "postgres",
   dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
+    ssl: config.database.ssl,
   },
-  logging: console.log,
+  logging: config.database.logging,
 });
 
 const db = {};
 
 // Import models by passing sequelize instance
 db.Users = require("./users")(sequelize);
+db.UserSessions = require("./userSessions")(sequelize);
+
+// Define associations
+db.Users.hasMany(db.UserSessions, {
+  foreignKey: "userId",
+  as: "sessions",
+  onDelete: "CASCADE",
+});
+
+db.UserSessions.belongsTo(db.Users, {
+  foreignKey: "userId",
+  as: "user",
+});
 
 // Export sequelize instance
 db.sequelize = sequelize;
@@ -28,8 +38,14 @@ db.initialize = async () => {
     await sequelize.authenticate();
     console.log("✅ Database connection established");
 
-    await sequelize.sync({ alter: true });
-    console.log("✅ All tables created/updated successfully");
+    // Only sync with alter in development
+    if (config.isDevelopment) {
+      await sequelize.sync({ alter: config.database.sync.alter });
+      console.log("✅ All tables created/updated successfully");
+    } else {
+      // In production, just verify connection without syncing
+      console.log("✅ Database connection verified (production mode - no auto-sync)");
+    }
   } catch (error) {
     console.error("❌ Database initialization failed:", error);
     throw error;
