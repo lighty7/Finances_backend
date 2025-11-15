@@ -6,6 +6,9 @@ const { verifyConnection: verifyEmailConnection } = require("./utils/emailServic
 
 const app = express();
 
+// Trust proxy to get real client IP (important for IP extraction)
+app.set('trust proxy', true);
+
 // Middleware
 app.use(cors(config.cors));
 app.use(express.json());

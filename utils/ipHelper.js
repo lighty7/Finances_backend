@@ -1,4 +1,29 @@
 /**
+ * Normalize IP address
+ * Converts IPv6 localhost to IPv4 and handles IPv6-mapped IPv4 addresses
+ */
+const normalizeIp = (ip) => {
+  if (!ip || ip === "unknown") {
+    return "unknown";
+  }
+
+  // Remove brackets from IPv6 addresses
+  ip = ip.replace(/^\[|\]$/g, "");
+
+  // Convert IPv6 localhost to IPv4 localhost
+  if (ip === "::1" || ip === "::ffff:127.0.0.1") {
+    return "127.0.0.1";
+  }
+
+  // Extract IPv4 from IPv6-mapped IPv4 addresses (::ffff:192.168.1.1)
+  if (ip.startsWith("::ffff:")) {
+    return ip.substring(7);
+  }
+
+  return ip;
+};
+
+/**
  * Extract client IP address from request
  * Handles proxies and load balancers
  */
@@ -8,21 +33,23 @@ const getClientIp = (req) => {
   const realIp = req.headers["x-real-ip"];
   const cfConnectingIp = req.headers["cf-connecting-ip"]; // Cloudflare
 
+  let ip = null;
+
   if (forwarded) {
-    // X-Forwarded-For can contain multiple IPs, get the first one
-    return forwarded.split(",")[0].trim();
+    // X-Forwarded-For can contain multiple IPs, get the first one (client IP)
+    ip = forwarded.split(",")[0].trim();
+  } else if (realIp) {
+    ip = realIp;
+  } else if (cfConnectingIp) {
+    ip = cfConnectingIp;
+  } else {
+    // Fallback to connection remote address
+    // Express req.ip is available when trust proxy is enabled
+    ip = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress;
   }
 
-  if (realIp) {
-    return realIp;
-  }
-
-  if (cfConnectingIp) {
-    return cfConnectingIp;
-  }
-
-  // Fallback to connection remote address
-  return req.connection?.remoteAddress || req.socket?.remoteAddress || req.ip || "unknown";
+  // Normalize and return the IP
+  return normalizeIp(ip || "unknown");
 };
 
 /**
