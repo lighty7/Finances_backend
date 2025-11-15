@@ -38,10 +38,6 @@ const sendEmail = async ({ to, subject, html, text, attachments = [] }) => {
   try {
     // Validate email configuration
     if (!config.email.enabled) {
-      console.log("📧 Email service disabled. Email would be sent:");
-      console.log(`   To: ${to}`);
-      console.log(`   Subject: ${subject}`);
-      console.log(`   Body: ${text || html.substring(0, 100)}...`);
       return {
         success: false,
         message: "Email service is disabled",
@@ -64,11 +60,6 @@ const sendEmail = async ({ to, subject, html, text, attachments = [] }) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    
-    console.log(`📧 Email sent successfully to ${to}`);
-    if (config.isDevelopment) {
-      console.log(`   Message ID: ${info.messageId}`);
-    }
 
     return {
       success: true,
@@ -76,7 +67,6 @@ const sendEmail = async ({ to, subject, html, text, attachments = [] }) => {
       response: info.response,
     };
   } catch (error) {
-    console.error("❌ Error sending email:", error);
     throw error;
   }
 };
@@ -87,7 +77,6 @@ const sendEmail = async ({ to, subject, html, text, attachments = [] }) => {
 const verifyConnection = async () => {
   try {
     if (!config.email.enabled) {
-      console.log("📧 Email service is disabled");
       return { verified: false, message: "Email service is disabled" };
     }
 
@@ -97,10 +86,8 @@ const verifyConnection = async () => {
     }
 
     await transporter.verify();
-    console.log("✅ SMTP connection verified");
     return { verified: true, message: "SMTP connection successful" };
   } catch (error) {
-    console.error("❌ SMTP verification failed:", error.message);
     return { verified: false, message: error.message };
   }
 };

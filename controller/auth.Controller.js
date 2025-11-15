@@ -9,8 +9,6 @@ const { sendEmail, templates } = require("../utils/emailService");
 
 // Helper function to handle errors
 const handleError = (error, res) => {
-  console.error("Auth Error:", error);
-
   if (error.name === "SequelizeValidationError") {
     return res.status(400).json({
       error: "Validation error",
@@ -124,9 +122,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Log login activity
-    console.log(`🔐 User login: ${user.emailId} from IP: ${ipAddress}, Device: ${systemDeviceId}`);
-
     // Send login notification email (async, don't wait for it)
     sendEmail({
       to: user.emailId,
@@ -136,8 +131,8 @@ exports.login = async (req, res) => {
         deviceInfo,
         new Date().toLocaleString()
       ),
-    }).catch((err) => {
-      console.error("Failed to send login notification email:", err);
+    }).catch(() => {
+      // Email sending failed - silently continue
     });
 
     res.status(200).json({
@@ -196,13 +191,6 @@ exports.logout = async (req, res) => {
       loggedOutAt: new Date(),
     });
 
-    // Get user info for logging
-    const user = await db.Users.findByPk(session.userId);
-    const ipAddress = getClientIp(req);
-
-    // Log logout activity
-    console.log(`🚪 User logout: ${user?.emailId || session.userId} from IP: ${ipAddress}, Device: ${session.deviceId}`);
-
     res.status(200).json({
       message: "Logout successful",
       loggedOutAt: session.loggedOutAt,
@@ -233,8 +221,6 @@ exports.logoutAll = async (req, res) => {
         },
       }
     );
-
-    console.log(`🚪 User logout all devices: ${req.user.emailId} from IP: ${ipAddress}`);
 
     res.status(200).json({
       message: "Logged out from all devices",

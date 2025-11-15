@@ -7,10 +7,10 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "dev": "NODE_ENV=development nodemon index.js",
-    "development": "NODE_ENV=development nodemon index.js",
-    "production": "NODE_ENV=production node index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "development": "cross-env NODE_ENV=development nodemon index.js",
+    "production": "cross-env NODE_ENV=production node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -26,5 +26,8 @@
     "pg": "^8.16.3",
     "sequelize": "^6.37.7",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0"
   }
 }

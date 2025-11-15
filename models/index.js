@@ -4,9 +4,9 @@ const config = require("../config/config");
 // Initialize Sequelize connection
 const sequelize = new Sequelize(config.database.url, {
   dialect: "postgres",
-  dialectOptions: {
-    ssl: config.database.ssl,
-  },
+dialectOptions: {
+  ssl: { require: true, rejectUnauthorized: false }
+},
   logging: config.database.logging,
 });
 

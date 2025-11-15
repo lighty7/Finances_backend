@@ -1,3 +1,4 @@
+// models/users.js
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 
@@ -15,39 +16,25 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: {
-            msg: "Username cannot be empty",
-          },
-          len: {
-            args: [3, 50],
-            msg: "Username must be between 3 and 50 characters",
-          },
+          notEmpty: { msg: "Username cannot be empty" },
+          len: { args: [3, 50], msg: "Username must be between 3 and 50 characters" },
         },
       },
       emailId: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: true, // leave this if you want attribute-level uniqueness
         validate: {
-          isEmail: {
-            msg: "Please provide a valid email address",
-          },
-          notEmpty: {
-            msg: "Email cannot be empty",
-          },
+          isEmail: { msg: "Please provide a valid email address" },
+          notEmpty: { msg: "Email cannot be empty" },
         },
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notEmpty: {
-            msg: "Password cannot be empty",
-          },
-          len: {
-            args: [6, 100],
-            msg: "Password must be between 6 and 100 characters",
-          },
+          notEmpty: { msg: "Password cannot be empty" },
+          len: { args: [6, 100], msg: "Password must be between 6 and 100 characters" },
         },
       },
       isVerified: {
@@ -59,7 +46,7 @@ module.exports = (sequelize) => {
       verificationToken: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: true,
+        // remove unique: true here to avoid Sequelize generating TYPE ... UNIQUE
         comment: "Email verification token",
       },
       verificationTokenExpiry: {
@@ -73,9 +60,13 @@ module.exports = (sequelize) => {
       tableName: "users",
       indexes: [
         {
+          name: "users_verificationtoken_key",
+          unique: true,
           fields: ["verificationToken"],
         },
         {
+          name: "users_email_id",
+          unique: true,
           fields: ["emailId"],
         },
       ],
@@ -96,7 +87,6 @@ module.exports = (sequelize) => {
     }
   );
 
-  // Instance method to exclude password from JSON
   Users.prototype.toJSON = function () {
     const values = { ...this.get() };
     delete values.password;

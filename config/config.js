@@ -11,7 +11,7 @@ const config = {
         alter: true, // Auto-modify tables in development
         force: false,
       },
-      logging: console.log, // Show SQL queries in development
+      logging: false, // SQL query logging disabled
       ssl: {
         require: true,
         rejectUnauthorized: false,
@@ -108,7 +108,6 @@ const requiredEnvVars = ["DATABASE_URL", "JWT_SECRET"];
 
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
-    console.error(`❌ ERROR: ${envVar} environment variable is not set`);
     process.exit(1);
   }
 }
@@ -117,7 +116,6 @@ for (const envVar of requiredEnvVars) {
 const currentConfig = config[env];
 
 if (!currentConfig) {
-  console.error(`❌ ERROR: Invalid NODE_ENV: ${env}. Must be 'development' or 'production'`);
   process.exit(1);
 }
 

@@ -6,8 +6,6 @@ const config = require("../config/config");
 
 // Helper function to handle errors
 const handleError = (error, res) => {
-  console.error("Error:", error);
-
   // Handle Sequelize validation errors
   if (error.name === "SequelizeValidationError") {
     return res.status(400).json({
@@ -89,8 +87,8 @@ exports.createUser = async (req, res) => {
     sendEmail({
       to: emailId,
       ...templates.verification(userName, verificationUrl),
-    }).catch((err) => {
-      console.error("Failed to send verification email:", err);
+    }).catch(() => {
+      // Email sending failed - silently continue
     });
 
     // Password is automatically excluded by toJSON hook
@@ -303,8 +301,8 @@ exports.resendVerification = async (req, res) => {
     sendEmail({
       to: emailId,
       ...templates.verification(user.userName, verificationUrl),
-    }).catch((err) => {
-      console.error("Failed to send verification email:", err);
+    }).catch(() => {
+      // Email sending failed - silently continue
     });
 
     res.status(200).json({
