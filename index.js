@@ -19,10 +19,12 @@ app.use(express.urlencoded({ extended: true }));
 // Import routes
 const userRoutes = require("./routes/users.routes");
 const authRoutes = require("./routes/auth.routes");
+const configurationRoutes = require("./routes/configuration.routes");
 
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/config", configurationRoutes);
 
 // Root route
 app.get("/", (req, res) => {

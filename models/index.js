@@ -15,6 +15,7 @@ const db = {};
 // Import models by passing sequelize instance
 db.Users = require("./users")(sequelize);
 db.UserSessions = require("./userSessions")(sequelize);
+db.UserConfiguration = require("./userConfiguration")(sequelize);
 
 // Define associations
 db.Users.hasMany(db.UserSessions, {
@@ -24,6 +25,17 @@ db.Users.hasMany(db.UserSessions, {
 });
 
 db.UserSessions.belongsTo(db.Users, {
+  foreignKey: "userId",
+  as: "user",
+});
+
+db.Users.hasOne(db.UserConfiguration, {
+  foreignKey: "userId",
+  as: "configuration",
+  onDelete: "CASCADE",
+});
+
+db.UserConfiguration.belongsTo(db.Users, {
   foreignKey: "userId",
   as: "user",
 });
