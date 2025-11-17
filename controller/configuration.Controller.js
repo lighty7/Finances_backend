@@ -91,11 +91,12 @@ exports.createOrUpdateConfiguration = async (req, res) => {
     }
 
     const userId = req.user.id;
-    const { totalEmi, numberOfLoans, emiSchedule, income } = req.body;
+    const { totalEmi, numberOfLoans, emiSchedule, income, loans } = req.body;
 
     // Determine if configuration should be marked as configured
-    // User is considered configured if they provide at least income or totalEmi
-    const isConfigured = !!(income || totalEmi);
+    // User is considered configured if they provide at least income, totalEmi, or loan details
+    const hasLoanData = Array.isArray(loans) && loans.length > 0;
+    const isConfigured = !!(income || totalEmi || hasLoanData);
 
     // Find or create configuration
     const [configuration, created] = await db.UserConfiguration.findOrCreate({
@@ -105,6 +106,7 @@ exports.createOrUpdateConfiguration = async (req, res) => {
         totalEmi: totalEmi || null,
         numberOfLoans: numberOfLoans || 0,
         emiSchedule: emiSchedule || null,
+        loans: loans || null,
         income: income || null,
         isConfigured,
       },
@@ -120,6 +122,7 @@ exports.createOrUpdateConfiguration = async (req, res) => {
             : configuration.numberOfLoans,
         emiSchedule:
           emiSchedule !== undefined ? emiSchedule : configuration.emiSchedule,
+        loans: loans !== undefined ? loans : configuration.loans,
         income: income !== undefined ? income : configuration.income,
         isConfigured: isConfigured || configuration.isConfigured,
       });

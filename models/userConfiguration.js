@@ -43,6 +43,13 @@ module.exports = (sequelize) => {
         defaultValue: null,
         comment: "Array of EMI schedule entries with date and amount",
       },
+      loans: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        defaultValue: null,
+        comment:
+          "Array of loan entries including bankName, loanType, principal, interestRate, startDate, currentBalance, notes",
+      },
       income: {
         type: DataTypes.DECIMAL(15, 2),
         allowNull: true,

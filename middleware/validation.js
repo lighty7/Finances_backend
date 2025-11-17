@@ -98,4 +98,51 @@ exports.validateConfiguration = [
     .isFloat({ min: 0 })
     .withMessage("Income must be a positive number")
     .toFloat(),
+  body("loans")
+    .optional()
+    .isArray()
+    .withMessage("Loans must be an array"),
+  body("loans.*.bankName")
+    .if(body("loans").isArray())
+    .notEmpty()
+    .withMessage("Loan bank name is required")
+    .isLength({ max: 100 })
+    .withMessage("Loan bank name cannot exceed 100 characters")
+    .trim(),
+  body("loans.*.loanType")
+    .if(body("loans").isArray())
+    .notEmpty()
+    .withMessage("Loan type is required")
+    .isLength({ max: 100 })
+    .withMessage("Loan type cannot exceed 100 characters")
+    .trim(),
+  body("loans.*.principal")
+    .if(body("loans").isArray())
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Loan principal must be a non-negative number")
+    .toFloat(),
+  body("loans.*.interestRate")
+    .if(body("loans").isArray())
+    .optional()
+    .isFloat({ min: 0, max: 100 })
+    .withMessage("Loan interest rate must be between 0 and 100")
+    .toFloat(),
+  body("loans.*.startDate")
+    .if(body("loans").isArray())
+    .optional()
+    .isISO8601()
+    .withMessage("Loan start date must be a valid ISO 8601 date"),
+  body("loans.*.currentBalance")
+    .if(body("loans").isArray())
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Loan current balance must be a non-negative number")
+    .toFloat(),
+  body("loans.*.notes")
+    .if(body("loans").isArray())
+    .optional()
+    .isLength({ max: 500 })
+    .withMessage("Loan notes cannot exceed 500 characters")
+    .trim(),
 ];
