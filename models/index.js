@@ -16,6 +16,7 @@ const db = {};
 db.Users = require("./users")(sequelize);
 db.UserSessions = require("./userSessions")(sequelize);
 db.UserConfiguration = require("./userConfiguration")(sequelize);
+db.UserTransaction = require("./userTransactions")(sequelize);
 
 // Define associations
 db.Users.hasMany(db.UserSessions, {
@@ -36,6 +37,17 @@ db.Users.hasOne(db.UserConfiguration, {
 });
 
 db.UserConfiguration.belongsTo(db.Users, {
+  foreignKey: "userId",
+  as: "user",
+});
+
+db.Users.hasMany(db.UserTransaction, {
+  foreignKey: "userId",
+  as: "transactions",
+  onDelete: "CASCADE",
+});
+
+db.UserTransaction.belongsTo(db.Users, {
   foreignKey: "userId",
   as: "user",
 });

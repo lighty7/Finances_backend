@@ -20,11 +20,13 @@ app.use(express.urlencoded({ extended: true }));
 const userRoutes = require("./routes/users.routes");
 const authRoutes = require("./routes/auth.routes");
 const configurationRoutes = require("./routes/configuration.routes");
+const transactionRoutes = require("./routes/transactions.routes");
 
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/config", configurationRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 // Root route
 app.get("/", (req, res) => {

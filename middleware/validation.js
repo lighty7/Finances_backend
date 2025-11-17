@@ -146,3 +146,48 @@ exports.validateConfiguration = [
     .withMessage("Loan notes cannot exceed 500 characters")
     .trim(),
 ];
+
+const transactionTypeEnum = ["INCOME", "EXPENSE"];
+
+exports.validateTransactionCreate = [
+  body("type")
+    .notEmpty()
+    .withMessage("Transaction type is required")
+    .isIn(transactionTypeEnum)
+    .withMessage("Invalid transaction type"),
+  body("amount")
+    .notEmpty()
+    .withMessage("Amount is required")
+    .isFloat({ min: 0 })
+    .withMessage("Amount must be a non-negative number")
+    .toFloat(),
+  body("transactionDate")
+    .notEmpty()
+    .withMessage("Transaction date is required")
+    .isISO8601()
+    .withMessage("Transaction date must be a valid ISO 8601 date"),
+  body("category").optional().isLength({ max: 100 }).trim(),
+  body("description").optional().isLength({ max: 500 }).trim(),
+  body("loanReference").optional().isLength({ max: 150 }).trim(),
+  body("paidEmi").optional().isBoolean().withMessage("paidEmi must be a boolean").toBoolean(),
+];
+
+exports.validateTransactionUpdate = [
+  body("type")
+    .optional()
+    .isIn(transactionTypeEnum)
+    .withMessage("Invalid transaction type"),
+  body("amount")
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Amount must be a non-negative number")
+    .toFloat(),
+  body("transactionDate")
+    .optional()
+    .isISO8601()
+    .withMessage("Transaction date must be a valid ISO 8601 date"),
+  body("category").optional().isLength({ max: 100 }).trim(),
+  body("description").optional().isLength({ max: 500 }).trim(),
+  body("loanReference").optional().isLength({ max: 150 }).trim(),
+  body("paidEmi").optional().isBoolean().withMessage("paidEmi must be a boolean").toBoolean(),
+];

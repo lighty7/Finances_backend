@@ -17,6 +17,12 @@ router.get(
   configurationController.checkConfigurationStatus
 );
 
+router.get(
+  "/summary",
+  authenticate,
+  configurationController.getLoanSummary
+);
+
 router.post(
   "/",
   authenticate,
